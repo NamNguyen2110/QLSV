@@ -1,10 +1,8 @@
 package com.training.qlsv.service;
 
-import com.training.qlsv.dao.Connection;
+import com.training.qlsv.dao.StudentDao;
 import com.training.qlsv.model.Student;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Scanner;
 
 public class StudentService {
@@ -18,12 +16,12 @@ public class StudentService {
         Student student = new Student();
         student.setName(studentName);
         student.setAddress(studentAddress);
-        Connection.create(student);
+        StudentDao.create(student);
         return student;
     }
 
     public static void findAll() {
-        Connection.findAll();
+        StudentDao.findAll();
     }
 
 }

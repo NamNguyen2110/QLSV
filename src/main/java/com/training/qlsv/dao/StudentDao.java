@@ -1,17 +1,14 @@
 package com.training.qlsv.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.training.qlsv.model.Student;
 import com.training.qlsv.utils.FileUtils;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-public class Connection {
+public class StudentDao {
 
     private static final String pathName = "result.txt";
 
@@ -32,10 +29,8 @@ public class Connection {
                 writer.createNewFile();
                 data.setId(1);
             }
-
             String dataToJson = new Gson().toJson(data);
             FileUtils.writeToFile(pathName, dataToJson, true);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
