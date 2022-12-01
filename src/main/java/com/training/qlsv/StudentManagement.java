@@ -5,6 +5,7 @@ import com.training.qlsv.service.StudentService;
 import java.util.Scanner;
 
 public class StudentManagement {
+    // new code
     public static void main(String[] args) {
         StudentService studentService = new StudentService();
         Scanner scanner = new Scanner(System.in);
