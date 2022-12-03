@@ -5,53 +5,124 @@ import com.training.qlsv.model.Student;
 import com.training.qlsv.utils.FileUtils;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDao {
 
-    private static final String pathName = "result.txt";
+    List<Student> students = new ArrayList<>();
+    private ConnectorDB connectorDB = new ConnectorDB();
+    // get connection
+    Connection connection = connectorDB.getConnection();
 
-    public static void create(Student data) {
+    public List<Student> findAll() {
         try {
-            File writer = new File(pathName);
-            if (writer.exists()) {
-                BufferedReader br
-                        = new BufferedReader(new InputStreamReader(new FileInputStream(pathName)));
-                String line;
-                String last = null;
-                while ((line = br.readLine()) != null) {
-                    last = line;
-                }
-                Student student = new Gson().fromJson(last, Student.class);
-                data.setId(student.getId() + 1);
-            } else {
-                writer.createNewFile();
-                data.setId(1);
+            // Create a statement object
+            String sql = "SELECT * FROM student";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            // execute query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // handling result set
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
+                String fullName = resultSet.getString("full_name");
+                String address = resultSet.getString("address");
+
+                Student student = new Student(id, fullName, address);
+                students.add(student);
+                System.out.println(student);
             }
-            String dataToJson = new Gson().toJson(data);
-            FileUtils.writeToFile(pathName, dataToJson, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void findAll() {
-        List<Student> studentList = new ArrayList<>();
-        try {
-            /**
-             TODO:
-             * READ FILE
-             * GET ALL DATA
-             * ADD TO LIST
-             */
-            FileReader reader = new FileReader(pathName);
-            BufferedReader br = new BufferedReader(reader);
-            String line = FileUtils.readFromInputStream(new FileInputStream(pathName));
-            System.out.println(line);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("errors");
         }
+        return students;
+    }
+
+    public Student findById(int id) {
+        try {
+            // Create a statement object
+            String sql = "SELECT * FROM student WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            // set parameter
+            preparedStatement.setInt(1, id);
+
+            // execute query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // handling result set
+            if (resultSet.next()) {
+                Integer idResult = resultSet.getInt("id");
+                String fullNameResult = resultSet.getString("full_name");
+                String addressResult = resultSet.getString("address");
+                Student student = new Student(idResult, fullNameResult, addressResult);
+                return student;
+            } else {
+                System.out.println("Student not found");
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("errors");
+            return null;
+        }
+    }
+
+    public void deleteByID(Integer id) {
+        try {
+            // Create a statement object
+            String sql = "DELETE FROM student WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            // set parameter
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(Student student) {
+        try {
+            // Create a statement object
+            String sql = "UPDATE student SET Full_name = ?, Address = ? WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            // set parameter
+            preparedStatement.setString(1, student.getName());
+            preparedStatement.setString(2, student.getAddress());
+            preparedStatement.setInt(3, student.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Student create(Student student) {
+        try {
+            // Create a statement object
+            String sql = "INSERT INTO student (full_name, address) VALUE (?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, student.getName());
+            preparedStatement.setString(2, student.getAddress());
+
+            preparedStatement.executeUpdate();
+            System.out.println("create successfully");
+            return student;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("error");
+            return null;
+        }
+
     }
 }
+
