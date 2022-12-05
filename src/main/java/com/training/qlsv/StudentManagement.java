@@ -15,7 +15,10 @@ public class StudentManagement {
             System.out.println("Có 2 option");
             System.out.println("1. Thêm thông tin sinh viên");
             System.out.println("2. Lấy ra danh sách sinh viên");
-            System.out.println("3. Kết thúc chương trình");
+            System.out.println("3. Tìm thông tin sinh viên theo ID");
+            System.out.println("4. Update thông tin sinh viên");
+            System.out.println("5. Xóa thông tin sinh viên");
+            System.out.println("6. Kết thúc chương trình");
             System.out.println("Mời chọn option");
             int choose = scanner.nextInt();
             switch (choose) {
@@ -26,6 +29,15 @@ public class StudentManagement {
                     studentService.findAll();
                     break;
                 case 3:
+                    studentService.findById();
+                    break;
+                case 4:
+                    studentService.updateById();
+                    break;
+                case 5:
+                    studentService.deleteById();
+                    break;
+                case 6:
                     System.out.println("Cảm ơn bạn đã sử dụng chương trình. Hẹn gặp lại!");
                     return;
             }
