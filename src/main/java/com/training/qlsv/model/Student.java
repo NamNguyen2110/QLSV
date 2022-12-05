@@ -2,11 +2,14 @@ package com.training.qlsv.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Student extends BaseModel implements Serializable {
     private Integer id;
     private String name;
     private String address;
+
+    private List<Course> courseList;
 
     public Student() {
     }
@@ -42,6 +45,18 @@ public class Student extends BaseModel implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public List<Course> getCourseList() {
+        return courseList;
+    }
+
+    public void setCourseList(List<Course> courseList) {
+        this.courseList = courseList;
     }
 
     @Override
