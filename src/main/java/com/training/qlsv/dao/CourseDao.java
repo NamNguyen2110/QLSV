@@ -1,6 +1,7 @@
 package com.training.qlsv.dao;
 
 import com.training.qlsv.model.Course;
+import com.training.qlsv.model.Student;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class CourseDao {
 
-    List<Course> Courses = new ArrayList<>();
+    List<Course> courses = new ArrayList<>();
     private ConnectorDB connectorDB = new ConnectorDB();
     // get connection
     Connection connection = connectorDB.getConnection();
@@ -32,6 +33,32 @@ public class CourseDao {
             return null;
         }
 
+    }
+
+    public List<Course> findAll() {
+        try {
+            // Create a statement object
+            String sql = "SELECT * FROM course";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            // execute query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // handling result set
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+
+                Course course = new Course();
+                course.setId(id);
+                course.setName(name);
+                courses.add(course);
+                System.out.println(course);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("errors");
+        }
+        return courses;
     }
 }
 
