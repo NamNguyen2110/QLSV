@@ -7,6 +7,7 @@ import com.training.qlsv.model.Student;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,20 +16,25 @@ public class CourseDao {
     private ConnectorDB connectorDB = new ConnectorDB();
     // get connection
     Connection connection = connectorDB.getConnection();
+    private static final String createCourse = "INSERT INTO Course (name) VALUE (?)";
+    private static final String findAllCourse = "SELECT * FROM course";
+    private static final String findById = "SELECT * FROM course WHERE id = ?";
+    private static final String findByCourseId = "SELECT s.full_name FROM student s LEFT JOIN coursestudent cs ON s.id = cs.id_student where id_course = ?";
+    private static final String deleteCourse = "DELETE FROM Course WHERE id = ?";
+    private static final String deleteStudentRecord = "DELETE FROM CourseStudent WHERE id_course = ?";
+    private static final String updateCourse = "UPDATE Course SET name = ? WHERE id = ?";
 
     public Course create(Course course) {
         try {
-            // Create a statement object
-            String sql = "INSERT INTO Course (name) VALUE (?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(createCourse);
             preparedStatement.setString(1, course.getName());
 
             preparedStatement.executeUpdate();
             System.out.println("create successfully");
             return course;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("error");
+            System.out.println("error SQL EXECUTE");
             return null;
         }
 
@@ -36,12 +42,9 @@ public class CourseDao {
 
     public List<Course> findAll() {
         List<Course> courses = new ArrayList<>();
-
         try {
-
             // Create a statement object
-            String sql = "SELECT * FROM course";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(findAllCourse);
 
             // execute query
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -53,23 +56,22 @@ public class CourseDao {
                 Course course = new Course();
                 course.setId(id);
                 course.setName(name);
-                course.setStudents(findStudentByCourse(course.getId()));
+                course.setStudents(findByCourseId(course.getId()));
                 courses.add(course);
                 System.out.println(course);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("errors");
+            System.out.println("error SQL EXECUTE");
         }
         return courses;
     }
 
-    public Course findById(int id) {
+    public Course findById(Integer id) {
         List<Student> students = new ArrayList<>();
         try {
             // Create a statement object
-            String sql = "SELECT * FROM Course WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(findById);
 
             // set parameter
             preparedStatement.setInt(1, id);
@@ -81,7 +83,7 @@ public class CourseDao {
             if (resultSet.next()) {
                 Integer idResult = resultSet.getInt("id");
                 String nameResult = resultSet.getString("name");
-                students = findStudentByCourse(idResult);
+                students = findByCourseId(idResult);
                 Course course = new Course();
                 course.setId(idResult);
                 course.setName(nameResult);
@@ -91,19 +93,18 @@ public class CourseDao {
                 System.out.println("Course not found");
                 return null;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("errors");
             return null;
         }
     }
 
-    private List<Student> findStudentByCourse(int id) {
+    private List<Student> findByCourseId(Integer id) {
         List<Student> students = new ArrayList<>();
         try {
             // Create a statement object
-            String sql = "SELECT s.full_name as name, cs.id_course FROM student s LEFT JOIN coursestudent cs ON s.id = cs.id_student where id_course = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(findByCourseId);
             preparedStatement.setInt(1, id);
             // execute query
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -114,24 +115,23 @@ public class CourseDao {
                 student.setName(resultSet.getString("name"));
                 students.add(student);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("errors");
         }
         return students;
     }
 
-    public void deleteByID(Integer id) {
+    public void deleteById(Integer id) {
         try {
             // Create a statement object
-            String sql = "DELETE FROM Course WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteCourse);
 
             // set parameter
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -139,14 +139,13 @@ public class CourseDao {
     public void deleteStudentRecord(Integer courseId) {
         try {
             // Create a statement object
-            String sql = "DELETE FROM CourseStudent WHERE id_course = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentRecord);
 
             // set parameter
             preparedStatement.setInt(1, courseId);
 
             preparedStatement.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -154,15 +153,14 @@ public class CourseDao {
     public void update(Course course) {
         try {
             // Create a statement object
-            String sql = "UPDATE Course SET name = ? WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(updateCourse);
 
             // set parameter
             preparedStatement.setString(1, course.getName());
             preparedStatement.setInt(2, course.getId());
 
             preparedStatement.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

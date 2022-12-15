@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Student extends BaseModel implements Serializable {
-    private static int COUNT;
+    private static int count;
     private Integer id;
     private String name;
     private String address;
@@ -13,11 +13,11 @@ public class Student extends BaseModel implements Serializable {
     private List<Course> courseList;
 
     public Student() {
-        this.id = ++COUNT;
+        this.id = ++count;
     }
 
     public Student(String name, String address, List<Course> courseList) {
-        this.id = ++COUNT;
+        this.id = ++count;
         this.name = name;
         this.address = address;
         this.courseList = courseList;
@@ -25,7 +25,7 @@ public class Student extends BaseModel implements Serializable {
 
     public Student(String createdBy, String updatedBy, LocalDateTime createdAt, LocalDateTime updatedAt, String name, String address, List<Course> courseList) {
         super(createdBy, updatedBy, createdAt, updatedAt);
-        this.id = ++COUNT;
+        this.id = ++count;
         this.name = name;
         this.address = address;
         this.courseList = courseList;
