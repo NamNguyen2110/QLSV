@@ -21,39 +21,39 @@ public class CourseService {
         return course;
     }
 
-    public Student findById() {
-//        System.out.println("Mời bạn nhập teen course");
-//        Integer id = scanner.nextInt();
-//        scanner.nextLine();
-//        Course course = CourseDao.findById(id);
-//        System.out.println(course.toString());
-//        return course;
-        return null;
+    public Course findById() {
+        System.out.println("Mời bạn nhập id course");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();
+        Course course = courseDao.findById(id);
+        System.out.println("Tên của môn học là: " + course.getName());
+        System.out.println("Các sv đã tham gia môn học này là:");
+        for (int i = 0; i < course.getStudents().size(); i++) {
+            System.out.println(course.getStudents().get(i).getName());
+        }
+        return course;
     }
 
     public Course updateById() {
-//        System.out.println("Mời bạn nhập id sv");
-//        Integer id = scanner.nextInt();
-//        scanner.nextLine();
-//        Course Course = CourseDao.findById(id);
-//        System.out.println("Mời bạn nhập tên sv");
-//        String CourseName = scanner.nextLine();
-//        System.out.println("Mời bạn nhập địa chỉ");
-//        String CourseAddress = scanner.nextLine();
-//        Course.setName(CourseName);
-//        Course.setAddress(CourseAddress);
-//        CourseDao.update(Course);
-//        System.out.println("update successfully");
-//        return Course;
-        return null;
+        System.out.println("Mời bạn nhập id course");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();
+        Course course = courseDao.findById(id);
+        System.out.println("Mời bạn nhập tên course");
+        String CourseName = scanner.nextLine();
+        course.setName(CourseName);
+        courseDao.update(course);
+        System.out.println("update successfully");
+        return course;
     }
 
     public void deleteById() {
-//        System.out.println("Mời bạn nhập id sv");
-//        Integer id = scanner.nextInt();
-//        scanner.nextLine();
-//        CourseDao.deleteByID(id);
-//        System.out.println("delete successfully");
+        System.out.println("Mời bạn nhập id course");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();
+        courseDao.deleteByID(id);
+        courseDao.deleteStudentRecord(id);
+        System.out.println("delete successfully");
     }
     public List<Course> findAll() {
         return courseDao.findAll();

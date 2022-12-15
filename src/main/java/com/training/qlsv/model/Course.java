@@ -55,7 +55,7 @@ public class Course extends BaseModel implements Serializable {
         return "Course{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", students=" + students +
+                ", number of students=" + students.size() +
                 '}';
     }
 }
